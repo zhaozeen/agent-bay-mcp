@@ -1,0 +1,72 @@
+params:
+  type: object
+  properties:
+    AGENTBAY_API_KEY:
+      type: string
+      description: AgentBay API Key (format: ako-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+    IMAGE_ID:
+      type: string
+      description: Default image ID for environments
+      default: windows_latest
+    REGION:
+      type: string
+      description: Region selection (singapore or china)
+      enum: [singapore, china]
+      default: singapore
+  required:
+    - AGENTBAY_API_KEY
+
+rest:
+  name: agentbay
+  port: 9593
+  endpoint: /rest
+
+npx:
+  command: |
+    AGENTBAY_API_KEY={AGENTBAY_API_KEY} IMAGE_ID={IMAGE_ID} REGION={REGION} npx -y agentbay-mcp
+  config: |
+    {
+      "mcpServers": {
+        "agentbay": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "agentbay-mcp"
+          ],
+          "env": {
+            "AGENTBAY_API_KEY": "YOUR_API_KEY_HERE",
+            "IMAGE_ID": "windows_latest",
+            "REGION": "singapore"
+          }
+        }
+      }
+    }
+
+docker:
+  command: |
+    docker run -i --rm -e AGENTBAY_API_KEY={AGENTBAY_API_KEY} -e IMAGE_ID={IMAGE_ID} -e REGION={REGION} agentbay/mcp
+  config: |
+    {
+      "mcpServers": {
+        "agentbay": {
+          "command": "docker",
+          "args": [
+            "run",
+            "-i",
+            "--rm",
+            "-e",
+            "AGENTBAY_API_KEY",
+            "-e", 
+            "IMAGE_ID",
+            "-e",
+            "REGION",
+            "agentbay/mcp"
+          ],
+          "env": {
+            "AGENTBAY_API_KEY": "YOUR_API_KEY_HERE",
+            "IMAGE_ID": "windows_latest",
+            "REGION": "singapore"
+          }
+        }
+      }
+    } 
